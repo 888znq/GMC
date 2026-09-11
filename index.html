@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Geometric Series Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #000432;
+      color: #ffffff;
+      font-family: 'Roboto Mono', monospace;
+      letter-spacing: 0.05em;
+      margin: 0;
+      padding: 20px;
+      font-size: 1.1em;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #ffffff;
+      letter-spacing: 0.05em;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto 0 0;
+    }
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+    }
+    .col-steps {
+      flex: 0 0 60px;
+    }
+    .col-terms {
+      flex: 1 1 auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95em;
+      table-layout: fixed;
+    }
+    td {
+      padding: 8px 10px;
+      text-align: left;
+      color: #ffffff;
+      border: 1px solid #ffffff;
+      font-family: 'Roboto Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+    td.step-cell {
+      width: 60px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .input-group label {
+      margin-bottom: 3px;
+      font-size: 0.95em;
+      color: #ffffff;
+      font-family: 'Roboto Mono', monospace;
+      letter-spacing: 0.05em;
+    }
+    .table-input {
+      width: 80px;
+      padding: 4px 6px;
+      border: 1px solid #ffffff;
+      border-radius: 4px;
+      background: #000432;
+      color: #ffffff;
+      font-size: 0.9em;
+      text-align: left;
+      outline: none;
+      font-family: 'Roboto Mono', monospace;
+      letter-spacing: 0.05em;
+      box-sizing: border-box;
+    }
+    #steps {
+      width: 60px;
+    }
+    .table-input:focus {
+      border-color: #fff;
+      box-shadow: 0 0 6px #fff;
+    }
+    @media (max-width: 700px) {
+      td { font-size: 0.85em; padding: 4px; }
+      .table-input { width: 60px; font-size: 0.85em; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Geometric Series Calculator</h1>
+  <div class="container">
+    <div class="header-row">
+      <div class="col-steps">
+        <div class="input-group">
+          <input type="number" id="steps" class="table-input" value="14" min="1" />
+        </div>
+      </div>
+      <div class="col-terms">
+        <div class="input-group">
+          <input type="number" id="multiplier" class="table-input" value="1.80" step="0.01" min="0.01" />
+        </div>
+      </div>
+    </div>
+    <table id="calcTable">
+      <colgroup>
+        <col style="width:60px" />
+        <col />
+      </colgroup>
+      <tbody id="resultBody"></tbody>
+    </table>
+  </div>
+  <script>
+    let startValue = "70";
+
+    function calculate() {
+      const steps = parseInt(document.getElementById("steps").value);
+      const multiplier = parseFloat(document.getElementById("multiplier").value);
+
+      const startValInputDom = document.getElementById("startVal");
+      if (startValInputDom) startValue = startValInputDom.value;
+
+      let term = parseFloat(startValue.replace(/^0+/, '')) || 0;
+      let body = "";
+
+      for (let i = 1; i <= steps; i++) {
+        let termCell = "";
+        if (i === 1) {
+          termCell = `<input type="text" id="startVal" value="${startValue}" class="table-input" min="0.01" step="any" autocomplete="off" />`;
+        } else {
+          termCell = Math.round(term * 100) / 100;
+        }
+
+        body += `
+        <tr>
+          <td class="step-cell">${i}.</td>
+          <td>${termCell}</td>
+        </tr>`;
+        term *= multiplier;
+      }
+      document.getElementById("resultBody").innerHTML = body;
+
+      const startValInput = document.getElementById("startVal");
+      if (startValInput) {
+        ["input","change","blur"].forEach(evt=>{
+          startValInput.addEventListener(evt, () => {
+            startValue = startValInput.value;
+            calculate();
+          });
+        });
+      }
+    }
+
+    window.onload = calculate;
+    document.querySelectorAll(".table-input").forEach((input) => {
+      input.addEventListener("input", calculate);
+    });
+  </script>
+</body>
+</html>
